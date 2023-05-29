@@ -1,0 +1,22 @@
+spring:
+    datasource:
+        driverClassName: org.mariadb.jdbc.Driver
+        username: lee
+        password: lk04250315
+        url: jdbc:mariadb://star-e.cn9nsxzhibgj.ap-northeast-2.rds.amazonaws.com:3306/stare
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MariaDBDialect
+                format_sql: true
+        show-sql: true
+        #hibernate:
+        #    ddl-auto: none
+        #defer-datasource-initialization: true
+
+#    sql:
+#        init:
+#            data-locations: classpath:/schema.sql
+#            mode: always
+    thymeleaf:
+        cache: false
