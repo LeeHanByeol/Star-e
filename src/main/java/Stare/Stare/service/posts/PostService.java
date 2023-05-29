@@ -1,22 +1,23 @@
 package Stare.Stare.service.posts;
 
+import Stare.Stare.domain.likes.Like;
+import Stare.Stare.domain.likes.LikeRepository;
 import Stare.Stare.domain.posts.Post;
 import Stare.Stare.domain.posts.PostRepository;
 import Stare.Stare.domain.user.User;
 import Stare.Stare.domain.user.UserRepository;
 import Stare.Stare.service.user.UserDetailsIMP;
-import Stare.Stare.web.PostApiController;
 import Stare.Stare.web.dto.posts.PostCreateRequestDto;
 import Stare.Stare.web.dto.posts.PostResponseDto;
 import Stare.Stare.web.dto.posts.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     //게시글 작성
     @Transactional
@@ -51,7 +53,11 @@ public class PostService {
         boolean isLiked;
         for(Post post : wholePosts){
             isLiked = false;
-            //NotImplemented 좋아요 구현
+            //Implemented 좋아요 구현
+            Optional<Like> like = likeRepository.findByUser_idAndPost_id(user.getId(), post.getId());
+            if(like.isPresent()){
+                isLiked = true;
+            }
             myPostResponseDtoList.add(new PostResponseDto(post, isLiked));
         }
         return myPostResponseDtoList;
@@ -73,9 +79,14 @@ public class PostService {
         //회원이 조회 중이라면,
         User user = userRepository.findByEmail(userDetails.getUsername())
                          .orElseThrow(()->new IllegalArgumentException("회원정보를 가져올 수 없습니다. 관리자에게 문의하세요."));
-        boolean isLiked = false;
 
-        //NotImplemented 해당 회원이 좋아요 눌렀는지 여부 구현해야함
+        boolean isLiked = false;
+        //Implemented 해당 회원이 좋아요 눌렀는지 여부 구현해야함
+        Optional<Like> like = likeRepository.findByUser_idAndPost_id(user.getId(), post.getId());
+        if(like.isPresent()){
+            isLiked = true;
+        }
+
         return new PostResponseDto(post, isLiked);
     }
 
@@ -92,13 +103,18 @@ public class PostService {
         User user = userRepository.findByEmail(userDetails.getUsername())
                         .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
 
-        if(post.getUser().getId() != user.getId()){
+        if(!post.getUser().getId().equals(user.getId())){
             throw new IllegalArgumentException("다른 사람의 게시글을 수정할 수 없습니다.");
         }
 
         boolean isLiked = false;
         post.update(postUpdateRequestDto);
-        //NotImplemented 해당 회원이 좋아요 눌렀는지 여부 구현해야함
+        //Implemented 해당 회원이 좋아요 눌렀는지 여부 구현해야함
+        Optional<Like> like = likeRepository.findByUser_idAndPost_id(user.getId(), post.getId());
+        if(like.isPresent()){
+            isLiked = true;
+        }
+
         return new PostResponseDto(post, isLiked);
     }
 
@@ -112,7 +128,7 @@ public class PostService {
         User user = userRepository.findByEmail(userDetails.getUsername())
                         .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
 
-        if(post.getUser().getId() != user.getId()){
+        if(!post.getUser().getId().equals(user.getId())){
             throw new IllegalArgumentException("다른 사람의 게시글을 삭제할 수 없습니다.");
         }
 

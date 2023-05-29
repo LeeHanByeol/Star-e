@@ -20,7 +20,7 @@ public class PostResponseDto {
     private final String nickname;       //글 작성자 닉네임
     private final String profile_url;           //글 작성자 프로필 이미지
 
-    //Concern: 좋아요 목록
+    //Concern: 해당 포스트의 총 좋아요 개수
     //private final Long numOfLike;
 
     public PostResponseDto(Post post, boolean isLiked){
@@ -30,6 +30,7 @@ public class PostResponseDto {
         this.createDate = post.getCreateDate();
         this.updateDate = post.getUpdateDate();
         this.isLiked = isLiked;
+
         this.nickname = post.getUser().getNickname();
         this.profile_url = post.getUser().getProfile_image();
     }
