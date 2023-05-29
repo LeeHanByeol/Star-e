@@ -30,7 +30,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             nativeQuery = true)
     List<Long> findByPost_id(@Param(value = "post_id") Long post_id);
 
-    //CONCERN: 근데 안 쓸 듯?
+    //CONCERN : 근데 안 쓸 듯?
     //특정 유저를 태그한 게시글id 리스트
     @Query(value = "SELECT post_id FROM TAG" +
             "WHERE user_id = :user_id",

@@ -14,7 +14,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     @Query(value = "INSERT INTO LIKE(user_id, post_id) " +
                                   "VALUES(:user_id, :post_id)",
             nativeQuery = true)
-    void likes(Long user_id, Long post_id);
+    void like(Long user_id, Long post_id);
 
     //좋아요 해제
     @Modifying(clearAutomatically = true)
@@ -22,10 +22,10 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
                          "WHERE user_id = :user_id " +
                                 "AND post_id = :post_id",
             nativeQuery = true)
-    void cancelLikes(Long user_id, Long post_id);
+    void cancelLike(Long user_id, Long post_id);
 
 
-    //
+    //특정 유저가 특정 게시글에 좋아요 했나 확인
     Optional<Like> findByUser_idAndPost_id(@Param(value = "user_id") Long user_id, @Param(value = "post_id") Long post_id);
 
 }

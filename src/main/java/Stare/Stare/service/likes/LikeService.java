@@ -14,13 +14,13 @@ public class LikeService {
     //좋아요
     @Transactional
     public void likes(Long user_id, Long post_id){
-        likeRepository.likes(user_id, post_id);
+        likeRepository.like(user_id, post_id);
     }
 
     //좋아요 취소
     @Transactional
     public void cancelLikes(Long user_id, Long post_id){
-        likeRepository.cancelLikes(user_id, post_id);
+        likeRepository.cancelLike(user_id, post_id);
     }
 
 }
